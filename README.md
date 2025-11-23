@@ -26,7 +26,7 @@ Solidity provides features such as:
 
 -   **Static typing**: Variable types must be defined in advance and are checked at compile time, reducing errors.
 -   **Inheritance**: Contracts can inherit from other contracts, promoting code reuse and modularity.
--   **User-defined types**: You can create custom data structures using structs, mappings, and enums.
+-   **Complex user-defined types**: You can create custom data structures using structs, mappings, and enums.
 -   **Library support**: Reusable code modules can be imported to extend functionality.
 -   **Smart contract interaction**: Contracts can easily communicate with other contracts on the blockchain.
 -   **Low-level EVM access**: Advanced developers can use inline assembly for optimized performance.
