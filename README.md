@@ -31,6 +31,17 @@ Solidity provides features such as:
 -   **Smart contract interaction**: Contracts can easily communicate with other contracts on the blockchain.
 -   **Low-level EVM access**: Advanced developers can use inline assembly for optimized performance.
 
+### Key Features of Solidity
+
+Solidity is designed specifically for EVM-based blockchains and offers several powerful features:
+  
+-   **Static typing**: Variable types must be defined in advance and are checked at compile time, reducing errors.
+-   **Inheritance**: Contracts can inherit from other contracts, promoting code reuse and modularity.
+-   **User-defined types**: You can create custom data structures using structs, mappings, and enums. More on this shortly!
+-   **Library support**: Reusable code modules can be imported to extend functionality.
+-   **Smart contract interaction**: Contracts can easily communicate with other contracts on the blockchain.
+-   **Low-level EVM access**: Advanced developers can use inline assembly for optimized performance.
+
 ### Solidity Code Structure
 
 -   **License Identifier** : specify how others can use your code with an SPDX license identifier:
