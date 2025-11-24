@@ -912,14 +912,14 @@ contract Calculator {
 
 #### Benefits of Libraries
 
--   Write Once, Use Everywhere: Define code in one place and use it in multiple contracts
--   Gas Savings: Libraries with internal functions get embedded in your contract's bytecode, while external library functions are deployed separately and can be reused by many contracts
--   No State Variables: Libraries cannot have state variables, making them perfect for pure utility functions
+-   **Write Once, Use Everywhere**: Define code in one place and use it in multiple contracts
+-   **Gas Savings**: Libraries with `internal` functions get embedded in your contract's bytecode, while `external` library functions are deployed separately and can be reused by many contracts
+-   **No State Variables**: Libraries cannot have state variables, making them perfect for pure utility functions
 
 #### Types of Libraries
 
-1. Embedded Libraries: Use internal functions that get copied into your contract's code
-2. Linked Libraries: Use external and public functions. These functions don't get copied into your contract's bytecode - instead, your contract makes calls to the deployed library.
+1. **Embedded Libraries**: Use internal functions that get copied into your contract's code
+2. **Linked Libraries**: Use external and public functions. These functions don't get copied into your contract's bytecode - instead, your contract makes calls to the deployed library.
 
 ### Contract Inheritance
 
@@ -963,8 +963,8 @@ Sometimes, you want to modify behavior from a parent contract. This is where fun
 
 To override a function:
 
-1. Mark the parent function with virtual (meaning "can be changed")
-2. Mark the child function with override (meaning "I'm changing this")
+1. Mark the parent function with `virtual` (meaning "can be changed")
+2. Mark the child function with `override` (meaning "I'm changing this")
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -999,7 +999,7 @@ contract ExtendedToken is BaseToken {
 }
 ```
 
-#### Multiple Inheritance
+### Multiple Inheritance
 
 Solidity allows a contract to inherit from multiple parents, but this requires careful handling.
 
@@ -1090,6 +1090,8 @@ contract MyToken is ERC20 {
 }
 ```
 
+#### Adding a Fee to Token Transfers
+
 Inheritance lets you customize standard behavior:
 
 ```solidity
@@ -1126,7 +1128,7 @@ The [OpenZeppelin Contract Wizard](https://wizard.openzeppelin.com/) is a helpfu
 
 The wizard generates production-ready code that you can customize further.
 
-### You can import code from various sources:
+### Importing External Code: You can import code from various sources:
 
 ```solidity
 // Import from npm package
@@ -1150,10 +1152,10 @@ import "./MyContract.sol";
 
 ### Best Practices
 
--   Keep it Simple: Avoid deep inheritance chains that are hard to follow
--   Document Function Overrides: Clearly comment what you're changing and why
--   Be Careful with Multiple Inheritance: It can create unexpected behavior if not managed properly
--   Reuse Trusted Code: Whenever possible, build on well-audited contracts like those from OpenZeppelin
+-   **Keep it Simple**: Avoid deep inheritance chains that are hard to follow
+-   **Document Function Overrides**: Clearly comment what you're changing and why
+-   **Be Careful with Multiple Inheritance**: It can create unexpected behavior if not managed properly
+-   **Reuse Trusted Code**: Whenever possible, build on well-audited contracts like those from OpenZeppelin
 
 ## Testnet Funds
 
