@@ -1165,20 +1165,21 @@ Let's walk through how to get some testnet LINK, how to add LINK to MetaMask and
 
 ### Adding LINK to Metamask
 
--   Head to the [Chainlink documentation](https://docs.chain.link/resources/link-token-contracts) and scroll down to the chain you want to use LINK on. E.g. [Sepolia Testnet](https://docs.chain.link/resources/link-token-contracts#sepolia-testnet)
+-   Head to the [**Chainlink documentation**](https://docs.chain.link/resources/link-token-contracts) and scroll down to the chain you want to use LINK on. E.g. [**Sepolia Testnet**](https://docs.chain.link/resources/link-token-contracts#sepolia-testnet)
+
 -   Click the **Add to wallet** button to import the LINK token to NetaMask. Note that this will only add the token for that secific network. This will need to be repeated for all networks you intend to use LINK tokens.
 
     <img src='./images/smart-contract-solidity-fundamentals/testnet-funds/add-to-wallet.png' alt='add-to-wallet' />
 
--   Click Add token to add the token to your MetaMask
+-   Click **Add token** to add the token to your MetaMask
 
     <img src='./images/smart-contract-solidity-fundamentals/testnet-funds/add-token.png' alt='add-token' />
 
 ### Using a LINK faucet
 
-To obtain testnet LINK, head to the [Chainlink Faucet](https://faucets.chain.link/) page. Here, you will find a list of all supported networks.
+To obtain testnet LINK, head to the [**Chainlink Faucet**](https://faucets.chain.link/) page. Here, you will find a list of all supported networks.
 
-Click the Link button at the top right, select the network(s) you want to get LINK on and click \*\*Continue. "
+Click the Link button at the top right, select the network(s) you want to **get LINK** on and click **\*\*Continue.**"
 
 <img src='./images/smart-contract-solidity-fundamentals/testnet-funds/select-networks-link.png' alt='select-networks-link' />
 
@@ -1193,7 +1194,7 @@ Click the Link button at the top right, select the network(s) you want to get LI
 
 LINK was easy to add to MetaMask since Chainlink included that cheeky **Add to wallet** button. But how do we add other tokens, such as USDC to MetaMask?
 
--   Find the token address. For USDC, for example, we can head to the [Circle documentation](https://developers.circle.com/stablecoins/usdc-on-test-networks) to find the address of the USDC contract on different chains. Copy the address for the USDC token on the chain you are working on.
+-   Find the token address. For USDC, for example, we can head to the [**Circle documentation**](https://developers.circle.com/stablecoins/usdc-on-test-networks) to find the address of the USDC contract on different chains. Copy the address for the USDC token on the chain you are working on.
 
 -   Open MetaMask and check you are on the same chain as the token address you just copied by clicking on the network button on the top left corner in MetMask
 
@@ -1203,7 +1204,7 @@ LINK was easy to add to MetaMask since Chainlink included that cheeky **Add to w
 
     <img src='./images/smart-contract-solidity-fundamentals/testnet-funds/token-tab.png' alt='token-tab' />
 
--   Enter the token contract address. MetaMask will automatically detect your token and its related information if it follows the ERC-20 standard.
+-   Enter the token contract address. MetaMask will automatically detect your token and its related information if it follows the **ERC-20 standard**.
 
 -   Check the correct information (Address, Token Symbol, and Decimals).
 
@@ -1667,7 +1668,7 @@ In the upcoming Chainlink VRF Section, you will learn how to take this knowledge
 
 ## Oracles Concepts
 
-Blockchains are designed to be self-contained and deterministic systems. Deterministic means that given the same inputs, the system will always produce the same outputs. This property is crucial for security and consensus, as all blockchain nodes must agree on the state of the data for every transaction.
+Blockchains are designed to be **self-contained** and **deterministic** systems. Deterministic means that given the same inputs, the system will always produce the same outputs. This property is crucial for security and consensus, as all blockchain nodes must agree on the state of the data for every transaction.
 
 However, due to their isolated nature, blockchains cannot directly access external (off-chain) data. While this design enhances security and data permanence, it also introduces significant trade-offs:
 
