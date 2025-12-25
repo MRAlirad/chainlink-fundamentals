@@ -912,14 +912,14 @@ contract Calculator {
 
 #### Benefits of Libraries
 
--   Write Once, Use Everywhere: Define code in one place and use it in multiple contracts
--   Gas Savings: Libraries with internal functions get embedded in your contract's bytecode, while external library functions are deployed separately and can be reused by many contracts
--   No State Variables: Libraries cannot have state variables, making them perfect for pure utility functions
+-   **Write Once, Use Everywhere**: Define code in one place and use it in multiple contracts
+-   **Gas Savings**: Libraries with `internal` functions get embedded in your contract's bytecode, while `external` library functions are deployed separately and can be reused by many contracts
+-   **No State Variables**: Libraries cannot have state variables, making them perfect for pure utility functions
 
 #### Types of Libraries
 
-1. Embedded Libraries: Use internal functions that get copied into your contract's code
-2. Linked Libraries: Use external and public functions. These functions don't get copied into your contract's bytecode - instead, your contract makes calls to the deployed library.
+1. **Embedded Libraries**: Use internal functions that get copied into your contract's code
+2. **Linked Libraries**: Use external and public functions. These functions don't get copied into your contract's bytecode - instead, your contract makes calls to the deployed library.
 
 ### Contract Inheritance
 
@@ -963,8 +963,8 @@ Sometimes, you want to modify behavior from a parent contract. This is where fun
 
 To override a function:
 
-1. Mark the parent function with virtual (meaning "can be changed")
-2. Mark the child function with override (meaning "I'm changing this")
+1. Mark the parent function with `virtual` (meaning "can be changed")
+2. Mark the child function with `override` (meaning "I'm changing this")
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -999,7 +999,7 @@ contract ExtendedToken is BaseToken {
 }
 ```
 
-#### Multiple Inheritance
+### Multiple Inheritance
 
 Solidity allows a contract to inherit from multiple parents, but this requires careful handling.
 
@@ -1090,6 +1090,8 @@ contract MyToken is ERC20 {
 }
 ```
 
+#### Adding a Fee to Token Transfers
+
 Inheritance lets you customize standard behavior:
 
 ```solidity
@@ -1126,7 +1128,7 @@ The [OpenZeppelin Contract Wizard](https://wizard.openzeppelin.com/) is a helpfu
 
 The wizard generates production-ready code that you can customize further.
 
-### You can import code from various sources:
+### Importing External Code: You can import code from various sources:
 
 ```solidity
 // Import from npm package
@@ -1150,10 +1152,10 @@ import "./MyContract.sol";
 
 ### Best Practices
 
--   Keep it Simple: Avoid deep inheritance chains that are hard to follow
--   Document Function Overrides: Clearly comment what you're changing and why
--   Be Careful with Multiple Inheritance: It can create unexpected behavior if not managed properly
--   Reuse Trusted Code: Whenever possible, build on well-audited contracts like those from OpenZeppelin
+-   **Keep it Simple**: Avoid deep inheritance chains that are hard to follow
+-   **Document Function Overrides**: Clearly comment what you're changing and why
+-   **Be Careful with Multiple Inheritance**: It can create unexpected behavior if not managed properly
+-   **Reuse Trusted Code**: Whenever possible, build on well-audited contracts like those from OpenZeppelin
 
 ## Testnet Funds
 
@@ -1163,20 +1165,21 @@ Let's walk through how to get some testnet LINK, how to add LINK to MetaMask and
 
 ### Adding LINK to Metamask
 
--   Head to the [Chainlink documentation](https://docs.chain.link/resources/link-token-contracts) and scroll down to the chain you want to use LINK on. E.g. [Sepolia Testnet](https://docs.chain.link/resources/link-token-contracts#sepolia-testnet)
+-   Head to the [**Chainlink documentation**](https://docs.chain.link/resources/link-token-contracts) and scroll down to the chain you want to use LINK on. E.g. [**Sepolia Testnet**](https://docs.chain.link/resources/link-token-contracts#sepolia-testnet)
+
 -   Click the **Add to wallet** button to import the LINK token to NetaMask. Note that this will only add the token for that secific network. This will need to be repeated for all networks you intend to use LINK tokens.
 
     <img src='./images/smart-contract-solidity-fundamentals/testnet-funds/add-to-wallet.png' alt='add-to-wallet' />
 
--   Click Add token to add the token to your MetaMask
+-   Click **Add token** to add the token to your MetaMask
 
     <img src='./images/smart-contract-solidity-fundamentals/testnet-funds/add-token.png' alt='add-token' />
 
 ### Using a LINK faucet
 
-To obtain testnet LINK, head to the [Chainlink Faucet](https://faucets.chain.link/) page. Here, you will find a list of all supported networks.
+To obtain testnet LINK, head to the [**Chainlink Faucet**](https://faucets.chain.link/) page. Here, you will find a list of all supported networks.
 
-Click the Link button at the top right, select the network(s) you want to get LINK on and click \*\*Continue. "
+Click the Link button at the top right, select the network(s) you want to **get LINK** on and click **\*\*Continue.**"
 
 <img src='./images/smart-contract-solidity-fundamentals/testnet-funds/select-networks-link.png' alt='select-networks-link' />
 
@@ -1191,7 +1194,7 @@ Click the Link button at the top right, select the network(s) you want to get LI
 
 LINK was easy to add to MetaMask since Chainlink included that cheeky **Add to wallet** button. But how do we add other tokens, such as USDC to MetaMask?
 
--   Find the token address. For USDC, for example, we can head to the [Circle documentation](https://developers.circle.com/stablecoins/usdc-on-test-networks) to find the address of the USDC contract on different chains. Copy the address for the USDC token on the chain you are working on.
+-   Find the token address. For USDC, for example, we can head to the [**Circle documentation**](https://developers.circle.com/stablecoins/usdc-on-test-networks) to find the address of the USDC contract on different chains. Copy the address for the USDC token on the chain you are working on.
 
 -   Open MetaMask and check you are on the same chain as the token address you just copied by clicking on the network button on the top left corner in MetMask
 
@@ -1201,7 +1204,7 @@ LINK was easy to add to MetaMask since Chainlink included that cheeky **Add to w
 
     <img src='./images/smart-contract-solidity-fundamentals/testnet-funds/token-tab.png' alt='token-tab' />
 
--   Enter the token contract address. MetaMask will automatically detect your token and its related information if it follows the ERC-20 standard.
+-   Enter the token contract address. MetaMask will automatically detect your token and its related information if it follows the **ERC-20 standard**.
 
 -   Check the correct information (Address, Token Symbol, and Decimals).
 
@@ -1665,7 +1668,7 @@ In the upcoming Chainlink VRF Section, you will learn how to take this knowledge
 
 ## Oracles Concepts
 
-Blockchains are designed to be self-contained and deterministic systems. Deterministic means that given the same inputs, the system will always produce the same outputs. This property is crucial for security and consensus, as all blockchain nodes must agree on the state of the data for every transaction.
+Blockchains are designed to be **self-contained** and **deterministic** systems. Deterministic means that given the same inputs, the system will always produce the same outputs. This property is crucial for security and consensus, as all blockchain nodes must agree on the state of the data for every transaction.
 
 However, due to their isolated nature, blockchains cannot directly access external (off-chain) data. While this design enhances security and data permanence, it also introduces significant trade-offs:
 
@@ -1840,9 +1843,7 @@ some reference resources on Data feeds:
 ### Data Feed Components
 
 -   **Consumer**: A consumer is an on-chain or off-chain contract that uses (i.e., consumes) Chainlink services (e.g., Data Feeds). For Data Feeds specifically, on-chain Consumer smart contracts use Chainlink’s [**AggregatorV3Interface**](https://github.com/smartcontractkit/chainlink/blob/develop/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol) to interact with the Chainlink Data Feed on-chain contracts and retrieve information from the smart contract that’s aggregating the relevant data. The Consumer contract is the smart contract that you design and implement to use Chainlink services. For a complete list of functions exposed in the AggregatorV3Interface, see the [**Data Feeds API Reference**](https://docs.chain.link/data-feeds/api-reference).
-
 -   **Proxy Contract**: Proxy contracts “point” to the correct aggregator contract that received data for a particular Data Feed. Using proxies enables the underlying aggregator to be upgraded without any service interruption to consuming contracts. The proxy will point to the new contract, and nothing changes for the consuming contract. The [**EACAggregatorProxy.sol**](https://github.com/smartcontractkit/chainlink/blob/contracts-v1.0.0/contracts/src/v0.6/EACAggregatorProxy.sol) contract on GitHub is a common example.
-
 -   **Aggregator Contract**: An aggregator is a smart contract managed by Chainlink that receives periodic data updates from the Chainlink decentralized oracle network. Aggregators store aggregated data on-chain so consumers can retrieve it and act upon it within the same transaction. They also make the data transparent and publicly verifiable. For a complete list of functions and variables available on most aggregator contracts, see the [**Data Feeds API Reference**](https://docs.chain.link/data-feeds/api-reference).
 
 ## Chainlink Price Feeds
