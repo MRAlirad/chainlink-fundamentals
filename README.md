@@ -1,5 +1,3 @@
-# ChainLink
-
 # Introduction
 
 -   [chainlink](https://chain.link)
@@ -2421,11 +2419,6 @@ If you head back to Remix, you can see the value of `counter` has increased afte
 
 <img src='./images/chainlink-automation/counter-increased-custom.png' alt='counter-increased-custom' />
 
-<!--
-
-
-### checkUpkeep
-
 ## Log Trigger Automation
 
 Log triggers in Chainlink Automation allow you to execute smart contract functions in response to on-chain events. When a contract emits a specific event (log), Chainlink Automation can detect it and automatically call a designated function in your target contract.
@@ -2465,11 +2458,9 @@ Back in Remix, in the `log-trigger` folder, create a file called `LogTrigger.sol
 
 This smart contract needs to:
 
-Inherit the `ILogAutomation` interface so it is compatible with log trigger automation. This requires we implement two functions:
-
--   **checkLog**: simulated by Automation to see if any work needs to be performed. This function returns performData, which is passed to the `performUpkeep` when it is executed. We will return the function caller in the performData so that we can emit a log containing who triggered/sent the event.
-
--   **performUpkeep**: executed by Automation when performing the upkeep. The `performData` can be used inside the function implementation. In this function, we will increment `counter` and emit a log containing who triggered the event (to demonstrate how the `performData` can be used).
+-   Inherit the `ILogAutomation` interface so it is compatible with log trigger automation. This requires we implement two functions:
+    -   `checkLog`: simulated by Automation to see if any work needs to be performed. This function returns `performData`, which is passed to the `performUpkeep` when it is executed. We will return the function caller in the `performData` so that we can emit a log containing who triggered/sent the event.
+    -   `performUpkeep`: executed by Automation when performing the upkeep. The `performData` can be used inside the function implementation. In this function, we will increment `counter` and emit a log containing who triggered the event (to demonstrate how the `performData` can be used).
 
 Copy and paste the code from the [course code repo](https://github.com/ciaranightingale/chainlink-fundamentals-code/blob/main/automation/log-trigger/LogTrigger.sol) into the `LogTrigger.sol` file.
 
@@ -2485,21 +2476,22 @@ We now need verify the contract on Etherscan. We will first need to flatten the 
 
 Now that we’ve deployed our smart contract let’s head to the Chainlink Automation app and create the upkeep to increment our counter using Automation when our event is emitted.
 
-Select Register new Upkeep and select the trigger mechanism as **Log trigger**.
+Select **Register new Upkeep** and select the trigger mechanism as **Log trigger**.
 
 <img src='./images/chainlink-automation/log-trigger-mechanism.png' alt='log-trigger-mechanism' />
 
-Enter the address of the `LogTrigger` contract as the Contract to automate.
+Enter the address of the `LogTrigger` contract as the **Contract to automate**.
 
-Enter the `EventEmitter` contract address for the Contract emitting logs, and select the `WantsToCount` event as the emitted log.
+Enter the `EventEmitter` contract address for the **Contract emitting logs**, and select the `WantsToCount` event as the emitted log.
 
-Leave the Log index topic filters blank and click **Next**
+Leave the **Log index topic filters** blank and click **Next**
 
 <img src='./images/chainlink-automation/log-trigger-options.png' alt='log-trigger-options' />
 
 Fill in the **Upkeep details**:
 
--   **Upkeep name**: A name for the upkeep visible on the Automation dashboard, e.g. "**LogTrigger Counter**"
+-   **Upkeep name**: A name for the upkeep visible on the Automation dashboard, e.g.
+-   **"LogTrigger Counter"**
 -   **Admin Address**: This will be your connected by default but you can change which address will be the admin for the upkeep here.
 -   **Gas limit**: The maximum amount of gas your selected function for upkeep will need to perfrom. This is `500_000` by default.
 -   **Starting balance**: A starting balance of LINK balance used to pay for Chainlink Automation. In this example, `5` LINK will surfice.
@@ -2513,7 +2505,7 @@ Click **Register Upkeep** and submit the registration request. Once confirmation
 
 You can click **View Upkeep** to see the upkeep details as the previous two lessons.
 
-Return to Remix, head to the Deploy & run transactions tabs, and call the `emitCountLog` function in the `EventEmitter` contract to emit a log and trigger an upkeep.
+Return to Remix, head to the **Deploy & run transactions** tabs, and call the `emitCountLog` function in the `EventEmitter` contract to emit a log and trigger an upkeep.
 
 <img src='./images/chainlink-automation/emit-count-log.png' alt='emit-count-log' />
 
@@ -2522,6 +2514,10 @@ Once this transaction is complete, you should see the upkeep in the history sect
 <img src='./images/chainlink-automation/log-trigger-history.png' alt='log-trigger-history' />
 
 If you check the counted value in the `LogTrigger` contract, you’ll find that it has increased by `1`.
+
+Congratulations! You’ve automated a contract’s function execution using a log trigger Automation mechanism.
+
+<!--
 
 # Chainlink CCIP Tokens
 
