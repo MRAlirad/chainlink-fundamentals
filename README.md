@@ -2794,7 +2794,7 @@ You can now check your USDC balance on Base Sepolia to see if your balance of US
 
 In this lesson, we will learn how to transfer USDC tokens cross-chain from Sepolia to Base Sepolia using Chainlink CCIP.
 
-#### Prerequisites
+### Prerequisites
 
 -   You have added the Base Sepolia testnet chain to MetaMask (if you need a reminder of how to add a chain to MetaMask, check out [this lesson in Blockchain Basics](https://updraft.cyfrin.io/courses/blockchain-basics/basics/making-your-first-transaction-on-zksync))
 
@@ -2927,107 +2927,107 @@ The function transferTokens allows us to send tokens cross-chain. Let's implemen
 
 1. **Balance verification**: Check whether the address calling the function has a USDC balance of at least the amount they are trying to bridge.
 
-```solidity
-if (_amount > USDC_TOKEN.balanceOf(msg.sender)) {
-    revert CCIPTokenSender__InsufficientBalance(USDC_TOKEN, USDC_TOKEN.balanceOf(msg.sender), _amount);
-}
-```
+    ```solidity
+    if (_amount > USDC_TOKEN.balanceOf(msg.sender)) {
+        revert CCIPTokenSender__InsufficientBalance(USDC_TOKEN, USDC_TOKEN.balanceOf(msg.sender), _amount);
+    }
+    ```
 
 2. **Prepare the token information**: To send a token cross-chain we need to create a message object of type `Client::EVM2AnyMessage`. This struct has the following members:
 
-```solidity
-// If extraArgs is empty bytes, the default is 200k gas limit.
-struct EVM2AnyMessage {
-    bytes receiver; // abi.encode(receiver address) for dest EVM chains
-    bytes data; // Data that is being sent cross-chain with the tokens. (For this example, we won't be sending any data)
-    EVMTokenAmount[] tokenAmounts; // Token transfers
-    address feeToken; // Address of feeToken. address(0) means you will send msg.value.
-    bytes extraArgs; // Populate this with _argsToBytes(EVMExtraArgsV2)
-}
-```
+    ```solidity
+    // If extraArgs is empty bytes, the default is 200k gas limit.
+    struct EVM2AnyMessage {
+        bytes receiver; // abi.encode(receiver address) for dest EVM chains
+        bytes data; // Data that is being sent cross-chain with the tokens. (For this example, we won't be sending any data)
+        EVMTokenAmount[] tokenAmounts; // Token transfers
+        address feeToken; // Address of feeToken. address(0) means you will send msg.value.
+        bytes extraArgs; // Populate this with _argsToBytes(EVMExtraArgsV2)
+    }
+    ```
 
-CCIP requires a specific format for specifying tokens to transfer. As above, the token information must be a `Client.EVMTokenAmount` struct array. This struct has the following members:
-
-```solidity
-struct EVMTokenAmount {
-    address token; // token address on the local chain.
-    uint256 amount; // Amount of tokens.
-}
-```
-
-To create this array:
-
--   We first create an empty `Client.EVMTokenAmount` array with a single element.
--   Then, we create a `Client.EVMTokenAmount` variable and pass the USDC token address and the amount to send. This tells Chainlink what token and how much is being sent cross-chain.
--   Finally, we initialize the first element with the `Client.EVMTokenAmount` variable.
+    CCIP requires a specific format for specifying tokens to transfer. As above, the token information must be a `Client.EVMTokenAmount` struct array. This struct has the following members:
 
     ```solidity
-    // Create an array with one element
-    Client.EVMTokenAmount[]
-        memory tokenAmounts = new Client.EVMTokenAmount[](1);
-    // Create a single Client.EVMTokenAmount variable with the details for the token and the amount to send cross-chain
-    Client.EVMTokenAmount memory tokenAmount = Client.EVMTokenAmount({
-        token: address(USDC_TOKEN),
-        amount: _amount
-    });
-    // Set the first element of the array to the Client.EVMTokenAmount variable
-    tokenAmounts[0] = tokenAmount;
+    struct EVMTokenAmount {
+        address token; // token address on the local chain.
+        uint256 amount; // Amount of tokens.
+    }
     ```
+
+    To create this array:
+
+    - We first create an empty `Client.EVMTokenAmount` array with a single element.
+    - Then, we create a `Client.EVMTokenAmount` variable and pass the USDC token address and the amount to send. This tells Chainlink what token and how much is being sent cross-chain.
+    - Finally, we initialize the first element with the `Client.EVMTokenAmount` variable.
+
+        ```solidity
+        // Create an array with one element
+        Client.EVMTokenAmount[]
+            memory tokenAmounts = new Client.EVMTokenAmount[](1);
+        // Create a single Client.EVMTokenAmount variable with the details for the token and the amount to send cross-chain
+        Client.EVMTokenAmount memory tokenAmount = Client.EVMTokenAmount({
+            token: address(USDC_TOKEN),
+            amount: _amount
+        });
+        // Set the first element of the array to the Client.EVMTokenAmount variable
+        tokenAmounts[0] = tokenAmount;
+        ```
 
 3. **Building the CCIP message** create a message `Client.EVM2AnyMessage` struct with the relevant values:
 
-```solidity
-Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
-    receiver: abi.encode(_receiver),
-    data: "", // no data
-    tokenAmounts: tokenAmounts,
-    extraArgs: Client._argsToBytes(
-        Client.EVMExtraArgsV1({gasLimit: 0}) // Setting gasLimit to 0 because:
-        // 1. This is a token-only transfer to an EOA (external owned account)
-        // 2. No contract execution is happening on the receiving end
-        // 3. gasLimit is only needed when the receiver is a contract that needs
-        //    to execute code upon receiving the message
-    ),
-    feeToken: address(LINK_TOKEN)
-});
-```
+    ```solidity
+    Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
+        receiver: abi.encode(_receiver),
+        data: "", // no data
+        tokenAmounts: tokenAmounts,
+        extraArgs: Client._argsToBytes(
+            Client.EVMExtraArgsV1({gasLimit: 0}) // Setting gasLimit to 0 because:
+            // 1. This is a token-only transfer to an EOA (external owned account)
+            // 2. No contract execution is happening on the receiving end
+            // 3. gasLimit is only needed when the receiver is a contract that needs
+            //    to execute code upon receiving the message
+        ),
+        feeToken: address(LINK_TOKEN)
+    });
+    ```
 
-3. **Handling fees**: Get the fees for the message via the `Router` contract, check if the contract has a sufficient LINK balance to pay the fees, and approve the `Router` to spend some of the `CCIPTokenSender`'s LINK as fees:
+4. **Handling fees**: Get the fees for the message via the `Router` contract, check if the contract has a sufficient LINK balance to pay the fees, and approve the `Router` to spend some of the `CCIPTokenSender`'s LINK as fees:
 
-```solidity
-uint256 ccipFee = CCIP_ROUTER.getFee(
-    DESTINATION_CHAIN_SELECTOR,
-    message
-);
+    ```solidity
+    uint256 ccipFee = CCIP_ROUTER.getFee(
+        DESTINATION_CHAIN_SELECTOR,
+        message
+    );
 
-if (ccipFee > LINK_TOKEN.balanceOf(address(this))) {
-    revert CCIPTokenSender__InsufficientBalance(LINK_TOKEN, LINK_TOKEN.balanceOf(address(this)), ccipFee);
-}
+    if (ccipFee > LINK_TOKEN.balanceOf(address(this))) {
+        revert CCIPTokenSender__InsufficientBalance(LINK_TOKEN, LINK_TOKEN.balanceOf(address(this)), ccipFee);
+    }
 
-LINK_TOKEN.approve(address(CCIP_ROUTER), ccipFee);
-```
+    LINK_TOKEN.approve(address(CCIP_ROUTER), ccipFee);
+    ```
 
-4. **Transferring and approving USDC**: Send the `_amount` to bridge to the `CCIPTokenSender` contract and approve the `Router` to be able to spend `_amount` of USDC from the `CCIPTokenSender` contract:
+5. **Transferring and approving USDC**: Send the `_amount` to bridge to the `CCIPTokenSender` contract and approve the `Router` to be able to spend `_amount` of USDC from the `CCIPTokenSender` contract:
 
-```solidity
-USDC_TOKEN.safeTransferFrom(msg.sender, address(this), _amount);
-USDC_TOKEN.approve(address(CCIP_ROUTER), _amount);
-```
+    ```solidity
+    USDC_TOKEN.safeTransferFrom(msg.sender, address(this), _amount);
+    USDC_TOKEN.approve(address(CCIP_ROUTER), _amount);
+    ```
 
-5. **Sending the CCIP message**: Finally, send the cross-chain message by calling the `ccipSend` function on the `Router` contract and emit an event:
+6. **Sending the CCIP message**: Finally, send the cross-chain message by calling the `ccipSend` function on the `Router` contract and emit an event:
 
-```solidity
-// Send CCIP Message
-messageId = CCIP_ROUTER.ccipSend(DESTINATION_CHAIN_SELECTOR, message);
+    ```solidity
+    // Send CCIP Message
+    messageId = CCIP_ROUTER.ccipSend(DESTINATION_CHAIN_SELECTOR, message);
 
-emit USDCTransferred(
-    messageId,
-    DESTINATION_CHAIN_SELECTOR,
-    _receiver,
-    _amount,
-    ccipFee
-);
-```
+    emit USDCTransferred(
+        messageId,
+        DESTINATION_CHAIN_SELECTOR,
+        _receiver,
+        _amount,
+        ccipFee
+    );
+    ```
 
 ##### 5. Withdrawal function
 
@@ -3062,3 +3062,134 @@ Now that you have the code written, deploy the `CCIPTokenSender` contract to the
     2. Your deployed contract and address.
 
 You have now successfully written and deployed a smart contract that uses CCIP to transfer USDC cross-chain! In the next lesson, we will use this contract to perform a cross-chain transfer from Sepolia to Base Sepolia!
+
+## Transferring Tokens Cross-chain in a Smart Contract Part 2
+
+In the previous lesson, we wrote and deployed a smart contract to send USDC from Sepolia to Base Sepolia. In this lesson, we will perform that cross-chain transfer using Chainlink CCIP.
+
+### Funding the contract with LINK
+
+To send tokens cross-chain, we need to fund our `CCIPTokenSender` function with LINK tokens to pay for the cross-chain transfer.
+
+This is a recap of what you learned in Section 2, Lesson 3, so we are going to go pretty quickly. Revisit that lesson if you'd like a more detailed breakdown.
+
+-   In MetaMask, click on the **Tokens** tab and click the **LINK** token:
+    <img src='./images/chainlink-ccip-tokens/mm-link-token.png' alt='mm-link-token' />
+
+-   Click the **Send** button:
+    <img src='./images/chainlink-ccip-tokens/send-link.png' alt='send-link' />
+
+-   For the **Send to** address, paste the address of the `CCIPTokenSender` contract we deployed in the previous lesson:
+    <img src='./images/chainlink-ccip-tokens/send-to.png' alt='send-to' />
+
+-   Enter the **Amount** of LINK to send to the contract. `3` LINK will be sufficient.
+
+-   Click **Continue**:
+    <img src='./images/chainlink-ccip-tokens/send-amount.png' alt='send-amount' />
+
+-   Click **Confirm** to sign the transaction and send the LINK tokens to the `CCIPTokenSender` contract:
+    <img src='./images/chainlink-ccip-tokens/confirm-transaction.png' alt='confirm-transaction' />
+
+#### Check the contract balance
+
+Let's check the LINK tokens successfully transferred to the `CCIPTokenSender` contract by checking its LINK balance. This tutorial uses Etherscan, but you can also use Blockscout or other block explorers.
+
+-   Navigate to [Etherscan Sepolia](https://sepolia.etherscan.io/) and search the LINK token address on Sepolia: `0x779877A7B0D9E8603169DdbD7836e478b4624789`.
+-   Clic **Connect to Web3** and connect MetaMask to Etherscan.
+-   Click on the **Contract** tabs and then **Read Contract** and find the `balanceOf` function
+-   For the `account`, enter the `CCIPTokenSender` address:
+
+<img src='./images/chainlink-ccip-tokens/link-etherscan.png' alt='link-etherscan' />
+
+If the transfer is successful, it will produce an output of `300000000000000`, which is 3 LINK in WEI.
+
+### Approve CCIPTokenSender to spend USDC
+
+When calling `transferTokens`, the function transfers tokens from the user (represented by `msg.sender`) to the `CCIPTokenSender` contract using the `safeTransferFrom` function, enabling those tokens to be sent cross-chain.
+
+Before this can work, the user must first grant permission to the `CCIPTokenSender` contract to transfer their USDC tokens. This permission is given through an "approval" transaction on the USDC contract, which authorizes the `CCIPTokenSender` contract to spend a specific amount of the user's tokens on their behalf.
+
+To do this token approval, we are going to interact with the USDC contract on Etherscan Sepolia, as we did the LINK token.
+
+-   Navigate to [Etherscan Sepolia](https://sepolia.etherscan.io/) and search the USDC token address on Sepolia: `0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238`
+-   Click on the **Contract** tabs and then **Write as Proxy**, (**Write** since we want to send a transaction that modifies state and **as Proxy** since we want to be calling functions on the implementation contract, and this is a proxy. Don't worry about what this means - it's pretty advanced stuff).
+-   Connect your wallet by clicking the **Connect to Web3** button.
+-   Find the `approve` function and click on it to expand it.
+-   For the `spender`, enter the `CCIPTokenSender` address; for the `value`, enter the number of tokens you want to send cross-chain; we will be sending `1 USDC` or `1000000` since USDC has 6 decimal places:
+    <img src='./images/chainlink-ccip-tokens/usdc-etherscan.png' alt='usdc-etherscan' />
+
+-   Click **Write** to initiate the transaction.
+-   Sign the transaction in MetaMask to send the transaction.
+-   To confirm the approval was successful, click the **Read as Proxy** tab and click the `allowance` function. Enter your address as the `owner` and the `CCIPTokenSender` contract address as the `spender`. Then, click **Query**:
+    <img src='./images/chainlink-ccip-tokens/allowance-usdc.png' alt='allowance-usdc' />
+
+-   If the approval was successful, you will see an output of `1000000`.
+
+### Executing the Cross-chain Transfer of USDC
+
+Let's FINALLY send some USDC from Sepolia to Base Sepolia using CCIP!
+
+-   Return to Remix and click the **Deploy and run transactions** tab.
+-   Click on the `transferTokens` function and fill out the following inputs:
+
+    -   `_receiver`: paste your wallet address since you will send yourself USDC on the destination chain. Note that, on some blockchains, you are not guaranteed to have the same address.
+    -   `_amount`: we are sending `1` USDC cross-chain, so put `1000000`(USDC has 6 decimal places).
+        <img src='./images/chainlink-ccip-tokens/transfer-usdc-inputs.png' alt='transfer-usdc-inputs' />
+
+-   Click **transact** to initiate the transaction.
+-   Sign the message in MetaMask by clicking **Confirm**.
+    <img src='./images/chainlink-ccip-tokens/confirm-cross-chain.png' alt='confirm-cross-chain' />
+
+-   In Remix, we will see a log in the terminal confirming the transfer has been initiated on Sepolia.
+    <img src='./images/chainlink-ccip-tokens/confirmed-transaction-terminal.png' alt='confirmed-transaction-terminal' />
+
+-   Copy the transaction hash! We will be using this shortly.
+
+You have now successfully initiated a cross-chain transfer from Sepolia to Base Sepolia!
+Now, we want to track the cross-chain message, see if the minting transaction has occurred on the destination chain, and when we received our bridged tokens. To do this, we will use the CCIP explorer.
+
+### Using the CCIP Explorer
+
+After sending a transaction, you can access the [CCIP Explorer](https://ccip.chain.link/) to check the progression of the coss-chain message.
+
+Paste the Sepolia transaction hash into the CCIP Explorer search bar:
+
+<img src='./images/chainlink-ccip-tokens/ccip-explorer.png' alt='ccip-explorer' />
+
+This will bring up the transaction details for your cross-chain transfer. Here, you will be able to see an overview of the transaction, including the source and destination transactions to burn and mint the tokens, respectively.
+
+It will also show the **Status** of the cross-chain message. The tokens are only received on the destination chain after full finality is reached on the source chain. For Ethereum Sepolia, this is approximately 20 minutes, but the times for different chains can be found in the Chainlink documentation.
+
+<img src='./images/chainlink-ccip-tokens/ccip-tx-details.png' alt='ccip-tx-details' />
+
+When the message's status changes from **Waiting for finality** to **Success**, you will have received your tokens on the destination chain:
+
+<img src='./images/chainlink-ccip-tokens/message-success.png' alt='message-success' />
+
+To check your USDC balance, switch your network inside MetaMask to Base Sepolia and then check your USDC balance in the **Tokens** tab (assuming you have imported the USDC token on Base Sepolia).
+
+<img src='./images/chainlink-ccip-tokens/balance-increased.png' alt='balance-increased' />
+
+Awesome! You successfully sent your first cross-chain message to bridge tokens from Sepolia to Base Sepolia using CCIP integrated into a smart contract!
+
+### Challenge!
+
+So now you know how to write a smart contract to bridge USDC tokens from Sepolia to Base Sepolia, the next challenge is to use this same smart contract to transfer [CCIP-BnM](https://sepolia.etherscan.io/token/0xfd57b4ddbf88a4e07ff4e34c487b99af2fe82a05#writeContract) tokens to ZKsync Sepolia!
+
+To do this you will need to:
+
+1. Add the ZKsync Sepolia chain to MetaMask.
+2. Add the CCIP-BnM token on Sepolia and ZKsync Sepolia to Metamask.
+3. Modify and re-deploy the smart contract to Sepolia:
+    - `DESTINATION_CHAIN_SELECTOR` to be the [selector for ZKsync Sepolia](https://docs.chain.link/ccip/directory/testnet/chain/ethereum-testnet-sepolia-zksync-1).
+    - Change the token to be CCIP-BnM rather than USDC.
+    - (devs-only): Can you moify the smart contracts to be adaptable for multiple chains by allowing the function caller to specify the token and destination chain?
+4. Get some test CCIP tokens (CCIP-BnM) by [calling `drip()` on the token contract using Etherscan](https://sepolia.etherscan.io/token/0xfd57b4ddbf88a4e07ff4e34c487b99af2fe82a05#writeContract).
+5. Call `transferTokens` as before and check the CCIP explorer to check the status of your cross-chain transfer.
+6. Check your balance of ZKsync Sepolia CCIP-BnM tokens has now increased!
+
+If you do this, make sure to let us know on Twitter/X using [this link](https://twitter.com/intent/post?text=I%20just%20transferred%20tokens%20cross-chain%20using%20%40chainlink%20CCIP%20to%20%40zksync%20testnet!%20Thanks%20%40ciaranightingal%20and%20%40cyfrinupdraft!) to send the following message:
+
+"I just transferred tokens cross-chain using @chainlink CCIP to @zksync testnet! Thanks @ciaranightingal and @cyfrinupdraft!"
+
+See how easy it is to transfer your tokens cross-chain to ZKsync? Cool right!
