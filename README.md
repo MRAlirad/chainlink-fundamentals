@@ -4624,3 +4624,56 @@ With direct funding, each consuming contract _directly_ pays for its randomness 
 If you are a developer, you should visit the [Chainlink VRF documentation](https://docs.chain.link/vrf/v2-5/security) to learn the security considerations for implementing VRF.
 
 By leveraging Chainlink VRF, developers can incorporate secure, verifiable randomness into their blockchain applications, enhancing fairness and unpredictability while maintaining the integrity of the decentralized ecosystem.
+
+## Creating a VRF Subscription
+
+In the next two lessons, we will learn how to use the subscription method (rather than the direct functing method) to use Chainlink VRF in a smart contract.
+
+The first step in using Chainlink VRF is creating a subscription to fund our requests for randomness. In this lesson, we will learn how to create a VRF subscription.
+
+### Prerequisites
+
+-   You have some [Sepolia ETH funds](https://faucets.chain.link/).
+-   You have some [Sepolia LINK](https://faucets.chain.link/).
+
+### Create a subscription
+
+-   Navigate to the [VRF App](https://vrf.chain.link/) and connect your wallet.
+-   Click the **Create Subscription** button.
+
+    <img src='./images/chainlink-vrf/vrf-app.png' alt="vrf-app" />
+
+-   Optionally,
+
+    -   Give your subscription a name.
+    -   Enter your email address.
+
+-   Click **Create Subscription**:
+
+    <img src='./images/chainlink-vrf/create-subscription.png' alt="create-subscription" />
+
+-   Confirm the transaction to approve the subscription creation:
+
+    <img src='./images/chainlink-vrf/approve-subscription.png' alt="approve-subscription" />
+
+-   Wait until the transaction has been confirmed, and sign the message to ensure you are the owner of the subscription:
+
+    <img src='./images/chainlink-vrf/sign-message.png' alt="sign-message" />
+
+-   Your subscription will have been created! Now, you need to add LINK to the subscription to fund requests for randomness. Click **Add funds**:
+
+    <img src='./images/chainlink-vrf/add-funds.png' alt="add-funds" />
+
+-   Enter the **Amount to fund** as `10` LINK, click **Fund subscription**, and confirm the transaction to send the LINK to the subscription.
+
+    <img src='./images/chainlink-vrf/5-link.png' alt="5-link" />
+
+-   You are now ready to add consumer smart contracts to your subscription to make requests for randomness. Click **Add consumers**:
+
+    <img src='./images/chainlink-vrf/add-consumers.png' alt="add-consumers" />
+
+-   Copy the **Subscription ID** (don't worry, you can view this ID again later). We now need to create a consumer contract!
+
+    <img src='./images/chainlink-vrf/subscription-id.png' alt="subscription-id" />
+
+Let's do that now! We will return to this page once we have deployed our consumer contract.
